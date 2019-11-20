@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
 using LiteServ.Client;
 using LiteServ.Common;
-using LiteServ.Common.Endpoints;
 using LiteServ.Common.Types.ExecutionRequestset;
+using LiteServ.Common.Types.Hubs;
 using LiteServ.Server;
 
 namespace LiteServ.TestConsole
@@ -13,14 +11,13 @@ namespace LiteServ.TestConsole
     {
         static void Main(string[] args)
         {
-            var hub = new TestHub();
-            var endpointbuilder = new EndPointBuilder();
-            hub.BuildEndpoints(endpointbuilder);
-            var testString = endpointbuilder.Endpoints["home"].Execute(new ExecutionRequest<string>
+            var server = new LiteServServer();
+            server.Start();
+            var testString = server.Process("test/home", new ExecutionRequest<string>
             {
                 Request = "Sup fool"
             });          
-            var testInt = endpointbuilder.Endpoints["home2"].Execute(new ExecutionRequest<string>
+            var testInt = server.Process("test/home2", new ExecutionRequest<string>
             {
                 Request = "12"
             });
@@ -29,7 +26,9 @@ namespace LiteServ.TestConsole
 
     class TestHub : LiteHub
     {
-        public override void BuildEndpoints(EndPointBuilder builder)
+        public override string Route => "test";
+
+        public override void BuildEndpoints(EndpointBuilder builder)
         {
             builder.Add<string>("home")
                 .On<string, string>(x =>
