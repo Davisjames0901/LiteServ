@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LiteServ.Client.Core\LiteServ.Client.Core.csproj" />
       <ProjectReference Include="..\LiteServ.Common\LiteServ.Common.csproj" />
     </ItemGroup>
 

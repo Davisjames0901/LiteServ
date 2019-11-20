@@ -2,12 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.0</TargetFramework>
-        <RootNamespace>LiteServ</RootNamespace>
+        <RootNamespace>LiteServ.Server</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\LiteServ.Common\LiteServ.Common.csproj" />
-      <ProjectReference Include="..\LiteServ.Server.Core\LiteServ.Server.Core.csproj" />
     </ItemGroup>
 
 </Project>

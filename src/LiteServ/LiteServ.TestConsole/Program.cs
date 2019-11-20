@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using LiteServ.Client;
-using LiteServ.Core;
+using LiteServ.Common;
+using LiteServ.Common.Endpoints;
+using LiteServ.Common.Types.ExecutionRequestset;
+using LiteServ.Server;
 
 namespace LiteServ.TestConsole
 {
@@ -9,11 +13,17 @@ namespace LiteServ.TestConsole
     {
         static void Main(string[] args)
         {
-            var server = new LiteServServer(typeof(TestHub));
-            new Thread(server.Start).Start();
-            
-            new TestClient().SendTest();
-            Console.Read();
+            var hub = new TestHub();
+            var endpointbuilder = new EndPointBuilder();
+            hub.BuildEndpoints(endpointbuilder);
+            var testString = endpointbuilder.Endpoints["home"].Execute(new ExecutionRequest<string>
+            {
+                Request = "Sup fool"
+            });          
+            var testInt = endpointbuilder.Endpoints["home2"].Execute(new ExecutionRequest<string>
+            {
+                Request = "12"
+            });
         }
     }
 
@@ -22,8 +32,18 @@ namespace LiteServ.TestConsole
         public override void BuildEndpoints(EndPointBuilder builder)
         {
             builder.Add<string>("home")
-                .Ok(Console.WriteLine)
-                .Error(err => Console.WriteLine(err.Message));
+                .On<string, string>(x =>
+                {
+                    Console.WriteLine(x);
+                    return x;
+                });
+
+            builder.Add<int>("home2")
+                .On<string, int>(x =>
+                {
+                    Console.WriteLine(x);
+                    return Int32.Parse(x);
+                });
         }
     }
 

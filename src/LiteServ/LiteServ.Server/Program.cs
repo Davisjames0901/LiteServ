@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LiteServ.Core
+namespace LiteServ.Server
 {
     class Program
     {

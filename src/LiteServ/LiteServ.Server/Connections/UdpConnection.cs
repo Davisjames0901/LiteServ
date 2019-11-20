@@ -1,4 +1,4 @@
-namespace LiteServ.Core.Connections
+namespace LiteServ.Server.Connections
 {
     public class UdpConnection : IConnection
     {
