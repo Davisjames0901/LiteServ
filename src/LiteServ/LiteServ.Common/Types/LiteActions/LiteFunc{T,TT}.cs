@@ -1,5 +1,8 @@
 using System;
+using System.ComponentModel.Design.Serialization;
+using LiteServ.Common.Serialization;
 using LiteServ.Common.Types.ExecutionRequest;
+using LiteServ.Common.Types.ExecutionRequestset;
 using LiteServ.Common.Types.ExecutionResult;
 
 namespace LiteServ.Common.Types.LiteActions
@@ -21,10 +24,43 @@ namespace LiteServ.Common.Types.LiteActions
                 throw new Exception("Invalid request");
             }
 
-            var result = Execute(request.Request);
+            var result = Execute(request.Content);
             return new ExecutionResult<TT>(result);;
         }
+
+        public SerializationContext GetSerializationContext(ISerializer serializer)
+        {
+            return new SerializationContext
+            {
+                CreateRequest = x => CreateRequest(x, serializer),
+                CreateResponse = x => CreateResponse(x, serializer)
+            };
+        }
+
+        private RequestSerializationResult CreateRequest(string message, ISerializer serializer)
+        {
+            var request = serializer.Deserialize<T>(message);
+            return new RequestSerializationResult
+            {
+                Request = new ExecutionRequest<T>
+                {
+                    Content = request
+                },
+                Status = SerializationStatus.Ok
+            };
+        }
         
+        private ResponseSerializationResult CreateResponse(IExecutionResultBase resultBase, ISerializer serializer)
+        {
+            var result = resultBase as ExecutionResult<TT>;
+            var request = serializer.Serialize(result.Content);
+            return new ResponseSerializationResult
+            {
+                Response =  request,
+                Status = SerializationStatus.Ok
+            };
+        }
+
         private TT Execute(T obj)
         {
             var resp = _func.Invoke(obj);

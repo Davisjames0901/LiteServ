@@ -13,14 +13,8 @@ namespace LiteServ.TestConsole
         {
             var server = new LiteServServer();
             server.Start();
-            var testString = server.Process("test/home", new ExecutionRequest<string>
-            {
-                Request = "Sup fool"
-            });          
-            var testInt = server.Process("test/home2", new ExecutionRequest<string>
-            {
-                Request = "12"
-            });
+            var testString = server.Process("test/home", "\"Sup Fool\"");
+            var testInt = server.Process("test/home2", "12");
         }
     }
 

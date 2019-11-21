@@ -4,6 +4,6 @@ namespace LiteServ.Common.Types.ExecutionRequestset
 {
     public class ExecutionRequest<T>:IExecutionRequest<T>
     {
-        public T Request { get; set; }
+        public T Content { get; set; }
     }
 }

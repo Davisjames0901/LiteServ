@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LiteServ.Common.Serialization;
+using LiteServ.Common.Types;
 using LiteServ.Common.Types.ExecutionRequest;
 using LiteServ.Common.Types.ExecutionResult;
 using LiteServ.Common.Types.Hubs;
@@ -10,20 +12,29 @@ namespace LiteServ.Server
 {
     public class LiteServServer
     {
-        private HubRoutingContext _routes;
+        private RoutingContext _routes;
         public void Start()
         {
             var hubs = GetHubs();
             var routeBuilders = hubs
                 .Select(x=>Activator.CreateInstance(x)as LiteHub)
                 .Select(x=> x.Build());
-            _routes= new HubRoutingContext(routeBuilders);
+            _routes= new RoutingContext(routeBuilders);
 
         }
 
-        public IExecutionResultBase Process(string path, IExecutionRequestBase request)
+        public IExecutionResultBase Process(string path, string content)
         {
-            return _routes.Execute(path, request);
+            var executionContext = _routes.GetExecutionContext(path, content, new JsonSerializer());
+            var request = executionContext.SerializationContext.CreateRequest(content);
+            if (request.Status == SerializationStatus.Ok)
+            {
+                return executionContext.Action.Execute(request.Request);
+            }
+            return new ExecutionResult
+            {
+                Status = Status.InternalError
+            };
         }
 
         //Todo: we should be using DI for this but I am lazy and will do it later when it matters more :D
