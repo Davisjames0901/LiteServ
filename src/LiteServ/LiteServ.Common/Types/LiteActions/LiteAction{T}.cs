@@ -38,15 +38,26 @@ namespace LiteServ.Common.Types.LiteActions
         
         private RequestSerializationResult CreateRequest(string message, ISerializer serializer)
         {
-            var request = serializer.Deserialize<T>(message);
-            return new RequestSerializationResult
+            try
             {
-                Request = new ExecutionRequest<T>
+                var request = serializer.Deserialize<T>(message);
+                return new RequestSerializationResult
                 {
-                    Content = request
-                },
-                Status = SerializationStatus.Ok
-            };
+                    Request = new ExecutionRequest<T>
+                    {
+                        Content = request
+                    },
+                    Status = SerializationStatus.Ok
+                };
+            }
+            catch (Exception e)
+            {
+                return new RequestSerializationResult
+                {
+                    Request = null,
+                    Status = SerializationStatus.Error
+                };
+            }
         }
 
         private void Execute(T obj)

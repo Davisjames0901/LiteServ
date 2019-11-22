@@ -1,6 +1,7 @@
 ﻿using System;
 using LiteServ.Client;
 using LiteServ.Common;
+using LiteServ.Common.Types;
 using LiteServ.Common.Types.ExecutionRequestset;
 using LiteServ.Common.Types.Hubs;
 using LiteServ.Server;
@@ -13,8 +14,18 @@ namespace LiteServ.TestConsole
         {
             var server = new LiteServServer();
             server.Start();
-            var testString = server.Process("test/home", "\"Sup Fool\"");
-            var testInt = server.Process("test/home2", "12");
+            var testString = server.Process(new RequestPacket
+            {
+                Content = "\"Sup Fool\"",
+                Path = "test/home",
+                ClientId = Guid.NewGuid()
+            });
+            var testInt = server.Process(new RequestPacket
+            {
+                Content = "12",
+                Path = "test/home2",
+                ClientId = Guid.NewGuid()
+            });
         }
     }
 
@@ -25,10 +36,10 @@ namespace LiteServ.TestConsole
         public override void BuildEndpoints(EndpointBuilder builder)
         {
             builder.Add<string>("home")
-                .On<string, string>(x =>
+                .On<int, string>(x =>
                 {
                     Console.WriteLine(x);
-                    return x;
+                    return x.ToString();
                 });
 
             builder.Add<int>("home2")

@@ -12,9 +12,9 @@ namespace LiteServ.Common
             _serializer = serializer;
         }
         
-        public Packet MessageReceived(Packet packet)
-        {
-            return packet;
-        }
+//        public Packet MessageReceived(Packet packet)
+//        {
+//            return packet;
+//        }
     }
 }
