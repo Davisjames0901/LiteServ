@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.Design.Serialization;
 using LiteServ.Common.Serialization;
 using LiteServ.Common.Types.ExecutionRequest;
 using LiteServ.Common.Types.ExecutionRequestset;
@@ -52,7 +51,7 @@ namespace LiteServ.Common.Types.LiteActions
                     Status = SerializationStatus.Ok
                 };
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new RequestSerializationResult
                 {
@@ -76,12 +75,7 @@ namespace LiteServ.Common.Types.LiteActions
         private TT Execute(T obj)
         {
             var resp = _func.Invoke(obj);
-            if (resp == null)
-            {
-                return default;
-            }
-
-            return resp;
+            return resp ?? default;
         }
     }
 }

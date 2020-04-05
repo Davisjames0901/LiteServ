@@ -7,7 +7,6 @@ namespace LiteServ.Common
     public class ExecutionContext
     {
         public RoutingStatus RoutingStatus { get; set; }
-        public SerializationContext SerializationContext { get; set; }
         public ILiteActionBase Action { get; set; }
     }
 }

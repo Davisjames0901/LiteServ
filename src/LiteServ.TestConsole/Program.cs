@@ -1,16 +1,16 @@
 ﻿using System;
 using LiteServ.Client;
 using LiteServ.Common;
+using LiteServ.Common.Attributes;
 using LiteServ.Common.Types;
-using LiteServ.Common.Types.ExecutionRequestset;
 using LiteServ.Common.Types.Hubs;
 using LiteServ.Server;
 
 namespace LiteServ.TestConsole
 {
-    static class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        internal static void Main()
         {
             var server = new LiteServServer();
             server.Start();
@@ -29,29 +29,43 @@ namespace LiteServ.TestConsole
         }
     }
 
-    class TestHub : LiteHub
+    [Route("test")]
+    internal class TestHub : LiteHub
     {
-        public override string Route => "test";
+        public string Route => "test";
 
-        public override void BuildEndpoints(EndpointBuilder builder)
+        // public override void BuildEndpoints(EndpointBuilder builder)
+        // {
+        //     builder.Add<string>("home")
+        //         .On<int, string>(x =>
+        //         {
+        //             Console.WriteLine(x);
+        //             return x.ToString();
+        //         });
+        //
+        //     builder.Add<int>("home2")
+        //         .On<string, int>(x =>
+        //         {
+        //             Console.WriteLine(x);
+        //             return int.Parse(x);
+        //         });
+        // }
+        [Action("home2")]
+        public string HomeTest(string param)
         {
-            builder.Add<string>("home")
-                .On<int, string>(x =>
-                {
-                    Console.WriteLine(x);
-                    return x.ToString();
-                });
+            Console.WriteLine(param);
+            return param;
+        }
 
-            builder.Add<int>("home2")
-                .On<string, int>(x =>
-                {
-                    Console.WriteLine(x);
-                    return Int32.Parse(x);
-                });
+        [Action("home2")]
+        public int Home2Test(string param)
+        {
+            Console.WriteLine(param);
+            return int.Parse(param);
         }
     }
 
-    class TestClient
+    internal class TestClient
     {
         public void SendTest()
         {

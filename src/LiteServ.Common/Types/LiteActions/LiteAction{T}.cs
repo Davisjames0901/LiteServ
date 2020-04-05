@@ -3,6 +3,7 @@ using LiteServ.Common.Serialization;
 using LiteServ.Common.Types.ExecutionRequest;
 using LiteServ.Common.Types.ExecutionRequestset;
 using LiteServ.Common.Types.ExecutionResult;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LiteServ.Common.Types.LiteActions
 {
@@ -10,7 +11,7 @@ namespace LiteServ.Common.Types.LiteActions
     {
         private readonly Action<T> _func;
         
-        public LiteAction(Action<T> func)
+        public LiteAction(IServiceCollection container, Action<T> func)
         {
             _func = func;
         }
@@ -50,7 +51,7 @@ namespace LiteServ.Common.Types.LiteActions
                     Status = SerializationStatus.Ok
                 };
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new RequestSerializationResult
                 {

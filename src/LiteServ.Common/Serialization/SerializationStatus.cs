@@ -4,6 +4,6 @@ namespace LiteServ.Common.Serialization
     {
         Ok,
         NotApplicable,
-        Error,
+        Error
     }
 }

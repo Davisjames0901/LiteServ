@@ -8,7 +8,7 @@ namespace LiteServ.Common.Endpoints
     public interface IEndpointBase
     {
         ILiteActionBase Action { get; set; }
-        
+        Type HubType { get; set; }
         IExecutionResultBase Execute(IExecutionRequestBase obj);
         Type GetReturnType();
     }

@@ -1,5 +1,3 @@
-using LiteServ.Common.Types.ExecutionResult;
-
 namespace LiteServ.Common.Serialization
 {
     public class ResponseSerializationResult

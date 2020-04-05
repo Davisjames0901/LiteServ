@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LiteServ.Common;
-using LiteServ.Common.Endpoints;
 using LiteServ.Common.Serialization;
 using LiteServ.Common.Types;
 using LiteServ.Common.Types.ExecutionRequest;
 using LiteServ.Common.Types.ExecutionResult;
 using LiteServ.Common.Types.Hubs;
 using LiteServ.Common.Types.LiteActions;
-using LiteServ.Common.Types.Routing;
 
 namespace LiteServ.Server
 {
@@ -28,7 +25,7 @@ namespace LiteServ.Server
 
         public ResponsePacket Process(RequestPacket packet)
         {
-            var executionContext = _routes.GetExecutionContext(packet.Path, packet.Content, new JsonSerializer());
+            var executionContext = _routes.GetExecutionContext(packet.Path, new JsonSerializer());
             var request = executionContext.SerializationContext.CreateRequest(packet.Content);
             
             if (request.Status != SerializationStatus.Ok)
@@ -39,13 +36,7 @@ namespace LiteServ.Server
             var result = Execute(executionContext.Action, request.Request);
             var response = executionContext.SerializationContext.CreateResponse(result);
             
-            if (response.Status != SerializationStatus.Ok)
-            {
-                return BuildSerializationErrorPacket(response.Status, packet.ClientId);
-            }
-            
-            return BuildPacket(Status.Ok, response.Response, packet.ClientId);
-            
+            return response.Status != SerializationStatus.Ok ? BuildSerializationErrorPacket(response.Status, packet.ClientId) : BuildPacket(Status.Ok, response.Response, packet.ClientId);
         }
 
         //Todo: we should be using DI for this but I am lazy and will do it later when it matters more :D
@@ -83,7 +74,7 @@ namespace LiteServ.Server
             {
                 SerializationStatus.Error => BuildPacket(Status.InternalError, "There was an issue deserializing", clientId),
                 SerializationStatus.NotApplicable => BuildPacket(Status.InvalidType, "No handle for that type", clientId),
-                _ => throw new Exception($"Missing arm of switch {status}")
+                _ => null
             };
         }
 

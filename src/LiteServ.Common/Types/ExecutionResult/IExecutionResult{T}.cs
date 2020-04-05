@@ -1,6 +1,6 @@
 namespace LiteServ.Common.Types.ExecutionResult
 {
-    public interface IExecutionResult<T> : IExecutionResultBase
+    public interface IExecutionResult<out T> : IExecutionResultBase
     {
         T Content { get; }
     }
