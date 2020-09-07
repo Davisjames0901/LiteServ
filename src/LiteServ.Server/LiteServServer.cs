@@ -15,15 +15,11 @@ namespace LiteServ.Server
 {
     public class LiteServServer
     {
-        private RoutingContext _routes;
-        public void Start()
-        {
-            var hubs = GetHubs();
-            var routeBuilders = hubs
-                .Select(x=>Activator.CreateInstance(x)as LiteHub)
-                .Select(x=> x.Build());
-            _routes= new RoutingContext(routeBuilders);
+        private readonly RoutingContext _routes;
 
+        public LiteServServer(RoutingContext routes)
+        {
+            _routes = routes;
         }
 
         public ResponsePacket Process(RequestPacket packet)
@@ -45,14 +41,6 @@ namespace LiteServ.Server
             }
             
             return BuildPacket(Status.Ok, response.Response, packet.ClientId);
-            
-        }
-
-        //Todo: we should be using DI for this but I am lazy and will do it later when it matters more :D
-        private IEnumerable<Type> GetHubs()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
-                .Where(x => typeof(LiteHub).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract);
         }
 
         private IExecutionResultBase Execute(ILiteActionBase action, IExecutionRequestBase request)
